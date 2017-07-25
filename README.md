@@ -5,12 +5,13 @@ Gazebo client for changing platform heght.
 The gazebo server must be running with the platform plugin.
 
 ```
-platformcmd HEIGHT
+platformcmd [-x X] [-y Y] [-h H]
 ```
-`HEIGHT` is the desired height for the platform:
-
-* if `HEIGHT >= 0` the platform's height is set as specified;
-* if `HEIGHT < 0` the platform's height is set randomly.
+* `X` is the x position of the platform
+* `Y` is the y position of the platform
+* `H` is the height of the platform
+  * if `H == 0` the platform's height is set to a random positive value;
+  * else the platform's height is set as specified.
 
 ## Compilation
 ```
