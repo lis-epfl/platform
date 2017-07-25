@@ -26,6 +26,7 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/gazebo_client.hh>
 #include <iostream>
+#include <unistd.h>
 #include "platform.pb.h"
 
 #ifdef __linux__
@@ -43,19 +44,46 @@ typedef const boost::shared_ptr<const platform_msgs::msgs::platform>
 
 int main(int _argc, char **_argv)
 {
-  if(_argc < 2) {
-	  std::cout 
-		<< COLOR_ERROR 
-		<< "Error: " 
-		<< COLOR_RESET
-		<< "no height provided.\n"
-		<< "Hint: Provide a negative value for random height\n";
-	  return 1;
-  }
+  platform_msgs::msgs::platform msg;
+  msg.set_time_msec(0);
   
-  float h = std::stof(_argv[1]);
-  if (h < 0) {
-	h = 1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/3));
+  float x, y, h;
+  char c;
+  opterr = 0;
+  
+  while ((c = getopt (_argc, _argv, "x:y:h:")) != -1) {
+    switch (c){
+    case 'x':
+      x = std::stof(optarg);
+      msg.set_x(x);
+      break;
+    case 'y':
+      y = std::stof(optarg);
+      msg.set_y(y);
+      break;
+    case 'h':
+      h = std::stof(optarg);
+      if(h == 0){
+        srand (static_cast <unsigned> (time(0)));
+        std::cout<<"Input height is 0: height will be randomly selected.\n";
+        h = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/4))+0.5;
+        std::cout<<"Height has been randomly set to: "<<h<<"\n";
+      }
+      msg.set_h(h);
+      break;
+    case '?':
+      if (optopt == 'h' || optopt == 'x' || optopt == 'y')
+        fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+      else if (isprint (optopt))
+        fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+      else
+        fprintf (stderr,
+                 "Unknown option character `\\x%x'.\n",
+                 optopt);
+      return 1;
+    default:
+      abort();
+    }
   }
   
   // Load gazebo
@@ -67,7 +95,7 @@ int main(int _argc, char **_argv)
   gazebo::transport::NodePtr node(new gazebo::transport::Node());
   node->Init();
 
-  // Advertise to Gazebo platform topic
+  // Advertise to Gazebo platform topic	
   std::cout<<"Advertising topic...\n";
   gazebo::transport::PublisherPtr pub = node->Advertise<platform_msgs::msgs::platform>("~/platform");
   
@@ -82,13 +110,7 @@ int main(int _argc, char **_argv)
   }
 
   // Send
-  std::cout 
-	<< "Publishing message (h="
-	<< h
-	<< ")...\n";
-  platform_msgs::msgs::platform msg;
-  msg.set_h(h);
-  msg.set_time_msec(0);
+  std::cout<<"Publishing message: ";
   pub->Publish(msg);
   
   // Make sure to shut everything down.
