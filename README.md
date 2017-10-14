@@ -9,6 +9,12 @@ git clone --recurse-submodules git@github.com:Arth-ur/platform.git
 cd platform
 ./build.sh
 ```
+To be able to use the tool everywhere, add `platform` to your path.
+For example on Ubuntu16.04 using realpath inside the repository:
+```
+ln -s $(realpath platform) /home/arthur/.local/bin/platform
+```
+
 
 ## Usage
 The gazebo server must be running with the platform plugin.
