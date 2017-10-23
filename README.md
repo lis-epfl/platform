@@ -5,7 +5,7 @@ Gazebo client for changing platform heght.
 All dependencies must be installed. Requires CMake 2.8 or later and 
 Gazebo 7 or later.
 ```
-git clone --recurse-submodules git@github.com:Arth-ur/platform.git
+git clone --recurse-submodules https://github.com/dronecourse-epfl/platform
 cd platform
 ./build.sh
 ```
