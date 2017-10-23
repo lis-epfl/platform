@@ -1,0 +1,9 @@
+sudo: required
+
+services:
+  - docker
+
+language: cpp
+
+script:
+  - ./docker_run.sh "sh build.sh"
