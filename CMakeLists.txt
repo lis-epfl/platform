@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 FIND_PACKAGE( Boost 1.40 COMPONENTS system REQUIRED )
 
+# Protobuf
 find_package(Protobuf REQUIRED)
 set(PROTOBUF_IMPORT_DIRS)
 foreach(ITR ${GAZEBO_INCLUDE_DIRS})
@@ -38,7 +39,7 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${msgs})
 add_library(platform_msgs SHARED ${PROTO_SRCS})
 target_link_libraries(platform_msgs ${PROTOBUF_LIBRARY})
 
-
+# Gazebo
 find_package(gazebo REQUIRED)
 
 include_directories(
@@ -48,6 +49,16 @@ include_directories(
 link_directories(${GAZEBO_LIBRARY_DIRS})
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
-add_executable(platform platformcmd.cc)
+# Platform
+set(PROGRAM_NAME "Platform Tool")
+execute_process(COMMAND git describe --long --dirty --abbrev=10 --tags
+				COMMAND tr -d '\n'
+				OUTPUT_VARIABLE PROGRAM_VERSION)
+execute_process(COMMAND git remote get-url origin
+				COMMAND tr -d '\n'
+				OUTPUT_VARIABLE PROGRAM_SOURCE)
+set(files platformcmd.cc platformcmd.hh)
+configure_file(platformcmd.hh.in platformcmd.hh)
+add_executable(platform ${files})
 target_link_libraries(platform platform_msgs ${GAZEBO_LIBRARIES} pthread)
 add_dependencies(platform platform_msgs)
