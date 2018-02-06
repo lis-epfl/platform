@@ -50,3 +50,10 @@ MIN_X=98.5	 MAX_X=101.5
 MIN_Y=-1.5	 MAX_Y=1.5
 MIN_H=0.8	 MAX_H=1.3
 ```
+
+### Using the platform server
+Start the server with: `serve-platform.py`.
+Then use `client-platform.sh` as if it was the actual `platform`
+command.
+
+For ease of use, set an alias with `alias platform=client-platform.sh`.

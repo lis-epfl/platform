@@ -183,7 +183,7 @@ std::cout <<
         fprintf (stderr, "Unknown option `-%c'.\n", optopt);
       else
         fprintf (stderr,
-                 "Unknown option character `\\x%x'.\n",
+                 "Unknown option character `\\x%02X'.\n",
                  optopt);
       return 1;
     default:
@@ -223,7 +223,8 @@ std::cout <<
   
   std::cout 
 		<< COLOR_SUCCESS
-		<< "\bOK!\n"
-		<< COLOR_RESET;
+		<< "\bOK!"
+		<< COLOR_RESET
+		<< "\n";
   return 0;
 }

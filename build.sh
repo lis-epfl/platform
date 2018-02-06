@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 # Build the platform tool using CMake. The first parameter must
 # be the out-of-source build directory.
@@ -21,7 +21,7 @@ fi
 
 cd "$SUPER_DIR"
 # create link
-if [ ! -f "$TARGET" ]; then
+if [ ! -e "$TARGET" ] && [ ! -h "$TARGET" ]; then
 	ln -s "$BUILD_SUBDIR/$TARGET" "$TARGET"
 fi
 
